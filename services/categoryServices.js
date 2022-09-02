@@ -41,7 +41,11 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
   const nameSlugify = slugify(name);
-  const category = await Category.findOneAndUpdate({ _id: id }, { name, slug: nameSlugify }, { new: true });
+  const category = await Category.findOneAndUpdate(
+    { _id: id },
+    { name, slug: nameSlugify },
+    { new: true }
+  );
   if (!category) {
     res.status(404).json({ msg: "not found" });
   }
