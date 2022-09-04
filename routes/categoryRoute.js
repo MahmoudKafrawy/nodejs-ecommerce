@@ -1,5 +1,5 @@
 const express = require("express");
-const validatorMiddleWare = require("../middleware/validatorMiddleWare");
+// const validatorMiddleWare = require("../middleware/validatorMiddleWare");
 const {
   getCategories,
   createCategory,
@@ -16,12 +16,7 @@ const {
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(getCategories)
-  .post(createCategoryValidator, (req, res) => {
-    createCategory;
-  });
+router.route("/").get(getCategories).post(createCategoryValidator, createCategory);
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)

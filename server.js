@@ -8,6 +8,7 @@ dotenv.config({ path: "config.env" });
 const dbConnection = require("./config/database");
 
 const categoryRoute = require("./routes/categoryRoute");
+const subCategoryRoute = require("./routes/subCategoryRoute");
 
 //DB connect
 dbConnection();
@@ -15,17 +16,18 @@ dbConnection();
 // App
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(express.json());
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
   console.log(`NODE ENV is ${process.env.NODE_ENV}`);
 }
 
 // Mount Route
 app.use("/api/v1/categories", categoryRoute);
+app.use("/api/v1/subcategories", subCategoryRoute);
 
-//create error and send it to middelwar
+//create error and send it to middleware
 app.all("*", (req, res, next) => {
   // const err = new Error(`cant find this route : ${req.originalUrl}`);
   // next(err.message);
@@ -35,7 +37,7 @@ app.all("*", (req, res, next) => {
 //global error handling middleware
 app.use(globalError);
 
-const PORT = process.env.PORT;
+const { PORT } = process.env;
 const server = app.listen(PORT || 8000, () => {
   console.log(`app run at port : ${PORT}`);
 });
