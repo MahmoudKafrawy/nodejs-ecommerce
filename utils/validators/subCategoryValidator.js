@@ -15,16 +15,20 @@ exports.createSubCategoryValidator = [
     .withMessage("Too short name")
     .isLength({ max: 32 })
     .withMessage("Too Long name"),
-  check("category").isMongoId().withMessage("invalid mongo ID"),
+  check("category")
+    .notEmpty()
+    .withMessage("Please enter Category ID")
+    .isMongoId()
+    .withMessage("invalid mongo ID"),
   validatorMiddleWare,
 ];
 
-// exports.updateSubCategoryValidator = [
-//   check("id").isMongoId().withMessage("invalid id"),
-//   validatorMiddleWare,
-// ];
+exports.updateSubCategoryValidator = [
+  check("id").isMongoId().withMessage("invalid id"),
+  validatorMiddleWare,
+];
 
-// exports.deleteSubCategoryValidator = [
-//   check("id").isMongoId().withMessage("invalid id"),
-//   validatorMiddleWare,
-// ];
+exports.deleteSubCategoryValidator = [
+  check("id").isMongoId().withMessage("invalid id"),
+  validatorMiddleWare,
+];

@@ -7,7 +7,7 @@ const subCategorySchema = new mongoose.Schema(
       trim: true,
       required: [true, "Must enter name"],
       unique: [true, "sub category must be unique"],
-      minlength: [3, "Too short name"],
+      minlength: [2, "Too short name"],
       maxlength: [32, "Too Long name"],
     },
     slug: {
@@ -15,7 +15,7 @@ const subCategorySchema = new mongoose.Schema(
       lowercase: true,
     },
     category: {
-      type: mongoose.Schema.objectID,
+      type: mongoose.Schema.ObjectId, // O must be capital like this
       ref: "Category",
       required: [true, "sub category must belong to parent category"],
     },
