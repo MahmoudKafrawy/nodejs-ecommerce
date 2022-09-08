@@ -3,6 +3,11 @@ const slugify = require("slugify");
 const SubCategory = require("../models/subCategoryModel");
 const ApiError = require("../utils/apiError");
 
+exports.setCategoryIdToBody = (req, res, next) => {
+  if (!req.body.category) req.body.category = req.params.categoryId;
+  next();
+};
+
 //@desc    Create Sub Category
 //@route   POST /api/v1/subcategories
 //@access  Private
@@ -23,10 +28,17 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 4;
   const skip = (page - 1) * limit;
-  const subCategories = await SubCategory.find({}).skip(skip).limit(limit);
-  res
-    .status(200)
-    .json({ results: subCategories.length, page, data: subCategories });
+
+  let filterObject = {};
+  if (req.params.categoryId) {
+    filterObject = { category: req.params.categoryId };
+  }
+
+  const subCategories = await SubCategory.find(filterObject)
+    .skip(skip)
+    .limit(limit)
+    .populate({ path: "category", select: "name -_id" }); // to get name only without id use (-_id)
+  res.status(200).json({ results: subCategories.length, page, data: subCategories });
 });
 
 //@desc    Get Specific Sub Category by ID
@@ -34,7 +46,10 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
 //@access  Public
 exports.getSubCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const subCategory = await SubCategory.findById(id);
+  const subCategory = await SubCategory.findById(id).populate({
+    path: "category",
+    select: "name -_id",
+  });
   if (!subCategory) {
     // res.status(404).json({ msg: "No Category for this id" });
     return next(new ApiError("Not Found ", 404));
@@ -47,17 +62,17 @@ exports.getSubCategory = asyncHandler(async (req, res, next) => {
 //@access  Private
 exports.updateSubCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, category } = req.body;
   const nameSlugify = slugify(name);
-  const category = await SubCategory.findOneAndUpdate(
+  const subcategory = await SubCategory.findOneAndUpdate(
     { _id: id },
-    { name, slug: nameSlugify },
+    { name, slug: nameSlugify, category },
     { new: true }
   );
-  if (!category) {
+  if (!subcategory) {
     res.status(404).json({ msg: "not found" });
   }
-  res.status(200).json({ data: category });
+  res.status(200).json({ data: subcategory });
 });
 
 //@desc    Delete Specific Sub Category by ID

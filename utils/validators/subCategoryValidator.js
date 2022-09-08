@@ -25,6 +25,7 @@ exports.createSubCategoryValidator = [
 
 exports.updateSubCategoryValidator = [
   check("id").isMongoId().withMessage("invalid id"),
+  check("name").notEmpty().withMessage("cannot be empty"),
   validatorMiddleWare,
 ];
 

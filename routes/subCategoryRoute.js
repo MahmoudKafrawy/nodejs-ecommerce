@@ -1,6 +1,7 @@
 const express = require("express");
 
-const router = express.Router();
+// access params from different routes
+const router = express.Router({ mergeParams: true });
 
 const {
   createSubCategory,
@@ -8,6 +9,7 @@ const {
   getSubCategory,
   deleteSubCategory,
   updateSubCategory,
+  setCategoryIdToBody,
 } = require("../services/subCategoryServices");
 const {
   createSubCategoryValidator,
@@ -18,7 +20,7 @@ const {
 
 router
   .route("/")
-  .post(createSubCategoryValidator, createSubCategory)
+  .post(setCategoryIdToBody, createSubCategoryValidator, createSubCategory)
   .get(getSubCategories);
 
 router
